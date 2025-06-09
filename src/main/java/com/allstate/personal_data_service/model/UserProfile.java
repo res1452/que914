@@ -10,8 +10,8 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserProfile {
 
     @Id
@@ -39,4 +39,15 @@ public class UserProfile {
 
     //Caching & API Optimization
     private boolean cacheable;
+
+    //Full name for events
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
+    //Marketing Preference
+    private boolean wantsPromotions;
+
+    //Localization
+    private String Locale;
 }
