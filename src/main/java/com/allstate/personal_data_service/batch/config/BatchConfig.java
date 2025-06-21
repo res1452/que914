@@ -18,7 +18,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 
 @Configuration
-@Profile("batch")
 @EnableBatchProcessing
 @RequiredArgsConstructor
 public class BatchConfig {
@@ -27,23 +26,23 @@ public class BatchConfig {
     private final PlatformTransactionManager transactionManager;
 
     private final ItemReader<UserProfile> reader;
-    private final ItemProcessor<UserProfile, UserProfile> processor;
-    private final ItemWriter<UserProfile> writer;
+//    private final ItemProcessor<UserProfile, UserProfile> processor;
+//    private final ItemWriter<UserProfile> writer;
 
     @Bean
     public Step userProfileMigrationStep(){
         return new StepBuilder("userProfileMigrationStep", jobRepository)
                 .<UserProfile, UserProfile>chunk(10, transactionManager)
                 .reader(reader)
-                .processor(processor)
-                .writer(writer)
+//                .processor(processor)
+//                .writer(writer)
                 .build();
     }
 
     @Bean
     public Job userProfileMigrationJob(){
         return new JobBuilder("userProfileMigrationJob", jobRepository)
-                .start(extractFromOracleStep())
+                .start(userProfileMigrationStep())
                 .build();
     }
 

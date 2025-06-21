@@ -23,5 +23,4 @@ public class NotificationEmailEventProducer {
         log.info("Producing opt-in notification event: {}", event);
         kafkaTemplate.send(TOPIC, event);
     }
-
 }

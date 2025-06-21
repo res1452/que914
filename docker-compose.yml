@@ -1,16 +1,17 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-dev
+  postgres:
+    image: postgres:15
+    container_name: personal_info_db
     ports:
-      - "3307:3306"
+      - "5432:5432"
     environment:
-      MYSQL_DATABASE: personal_info_service
+      POSTGRES_DB: personal_info_migration
+      POSTGRES_USER: postgres
       MYSQL_ROOT_PASSWORD: Test2323
     volumes:
-      - mysql-data:/var/lib/mysql
+      - pgdata:/var/lib/postgresql/data
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
@@ -40,4 +41,4 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
 
 volumes:
-  mysql-data:
+  pgdata:

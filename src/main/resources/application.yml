@@ -11,8 +11,8 @@ spring:
       spring.json.value.default.type: com.personal-data-service.UserProfileUpdatedEvent
 
   datasource:
-    url: jdbc:mysql://localhost:3307/personal_info_service
-    username: root
+    url: jdbc:postgresql://localhost:5432/personal_info_migration
+    username: postgres
     password: Test2323
   jpa:
     hibernate:

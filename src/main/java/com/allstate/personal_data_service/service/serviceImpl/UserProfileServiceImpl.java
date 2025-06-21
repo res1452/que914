@@ -1,5 +1,7 @@
 package com.allstate.personal_data_service.service.serviceImpl;
 
+import com.allstate.personal_data_service.dto.UserProfileDTO;
+import com.allstate.personal_data_service.event.NotificationEmailEvent;
 import com.allstate.personal_data_service.event.UserProfileUpdatedEvent;
 import com.allstate.personal_data_service.model.UserProfile;
 import com.allstate.personal_data_service.repository.UserProfileRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +32,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
     private final RedisTemplate<String, UserProfile> redisTemplate;
+
+    private final NotificationEmailEventProducer notificationEmailEventProducer;
+
 
     private static final String CACHE_PREFIX = "user";
 
@@ -55,7 +61,25 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile createUser(UserProfile userProfile){
+    public UserProfile createUser(UserProfileDTO dto){
+        UserProfile userProfile = new  UserProfile();
+
+        //Manual DTO -> Entity mapping
+        userProfile.setFirstName(dto.getFirstName());
+        userProfile.setLastName(dto.getLastName());
+        userProfile.setEmail(dto.getEmail());
+        userProfile.setPhoneNumber(dto.getPhoneNumber());
+        userProfile.setDateOfBirth(dto.getDateOfBirth());
+        userProfile.setGender(dto.getGender());
+        userProfile.setMaritalStatus(dto.getMaritalStatus());
+        userProfile.setAddress(dto.getAddress());
+        userProfile.setVehicle(dto.getVehicle());
+        userProfile.setRole(dto.getRole());
+        userProfile.setCacheable(dto.isCacheable());
+        userProfile.setWantsPromotions(dto.isWantsPromotions());
+        userProfile.setLocale(dto.getLocale());
+
+        //Save to database
         UserProfile savedUser = userProfileRepository.save(userProfile);
 
         // Store in Redis with 24-hour expiration
@@ -69,10 +93,19 @@ public class UserProfileServiceImpl implements UserProfileService {
                 "system",
                 LocalDateTime.now()
         );
-
-        //if(
-
         userProfileEventProducer.sendUserProfileEvent(event);
+
+        //Send promotional opt-in event if applicable
+        if(dto.isWantsPromotions()){
+            NotificationEmailEvent promoEvent = new NotificationEmailEvent(
+                    savedUser.getEmail(),
+                    savedUser.getFullName(),
+                    "MARKETING_OPTIN",
+                    savedUser.getLocale(),
+                    Instant.now().toString()
+            );
+            notificationEmailEventProducer.send(promoEvent);
+        }
 
         return savedUser;
     }

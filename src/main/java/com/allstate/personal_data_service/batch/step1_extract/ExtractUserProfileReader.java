@@ -20,8 +20,20 @@ public class ExtractUserProfileReader {
     public ItemReader<UserProfile> oracleUserProfileReader() {
 
         List<UserProfile> mockData = List.of(
-                new UserProfile(1L, "  John  ", "Doe", "JoHn@example.COM", "(123)456-7890"),
-                new UserProfile(2L, "  Jane  ", "Smith", "jane@EXAMPLE.com", "123.456.7891")
+                new UserProfile(
+                        1L, "  John  ", "Doe", "JoHn@example.COM", "(123)456-7890",
+                        null, null, null, null, null, // dateOfBirth → vehicle
+                        "USER", false,                // role, cacheable
+                        false,                        // wantsPromotions
+                        "en-US"                       // Locale
+                ),
+                new UserProfile(
+                        2L, "  Jane  ", "Smith", "jane@EXAMPLE.com", "123.456.7891",
+                        null, null, null, null, null,
+                        "USER", false,
+                        false,
+                        "en-US"
+                )
         );
         return new ListItemReader<>(mockData);
     }

@@ -12,5 +12,6 @@ public class NotificationEmailEvent {
     private String email;
     private String fullName;
     private String eventType;
-    private String quoteId;
+    private String locale;
+    private String timestamp;
 }
