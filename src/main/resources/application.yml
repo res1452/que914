@@ -10,6 +10,14 @@ spring:
       spring.json.add.type.headers: false
       spring.json.value.default.type: com.personal-data-service.UserProfileUpdatedEvent
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://your-keycloak-domain/realms/allstate-realm
+          # OR use jwk-set-uri if issuer discovery is not working:
+          # jwk-set-uri: https://your-keycloak-domain/realms/allstate-realm/protocol/openid-connect/certs
+
   datasource:
     url: jdbc:postgresql://localhost:5432/personal_info_migration
     username: postgres

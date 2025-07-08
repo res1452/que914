@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "UserOptedInAvro",
+  "namespace": "com.allstate.personal_data_service.avro",
+  "fields": [
+    {"name": "userId", "type": "long"},
+    {"name": "email", "type": "string"},
+    {"name": "wantsPromotions", "type": "boolean"},
+    {"name": "optInTimestamp", "type": "long"},
+    {"name": "source", "type": "string", "default": "web-form"},
+    {"name": "channel", "type": "string", "default": "email"}
+  ]
+}

@@ -12,7 +12,7 @@ public interface UserProfileService {
 
     UserProfile createUser(UserProfileDTO dto);
 
-    UserProfile updateUser(Long id, UserProfile userProfile);
+    UserProfile updateUser(Long id, UserProfileDTO userProfile);
 
     UserProfile patchUser(Long id, Map<String, Object> updates);
 

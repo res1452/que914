@@ -112,7 +112,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     @CacheEvict(value = "userProfiles", key = "#id")
-    public UserProfile updateUser(Long id, UserProfile userProfile){
+    public UserProfile updateUser(Long id, UserProfileDTO userProfile){
         UserProfile existingUser = userProfileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 

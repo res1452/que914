@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "NotificationEmailAvro",
+  "namespace": "com.allstate.personal_data_service.avro",
+  "fields": [
+    { "name": "firstName",        "type": "string" },
+    { "name": "email",            "type": "string" },
+    { "name": "wantsPromotions",  "type": "boolean" },
+    { "name": "locale",           "type": "string", "default": "en_US" },
+    { "name": "templateId",       "type": "string", "default": "DEFAULT_TEMPLATE" },
+    { "name": "timestamp",        "type": "long",   "default": 0 },
+    { "name": "eventSource",      "type": "string", "default": "personal_information_service" }
+  ]
+}

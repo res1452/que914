@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "name": "UserProfileUpdatedAvro",
+  "namespace": "com.allstate.personal_data_service.avro",
+  "fields": [
+    {"name": "userId", "type": "long"},
+    {"name": "firstName", "type": "string"},
+    {"name": "lastName", "type": "string"},
+    {"name": "email", "type": "string"},
+    { "name": "phoneNumber", "type": "string" },
+    { "name": "wantsPromotions", "type": "boolean" },
+    { "name": "locale", "type": "string" },
+    {
+      "name": "address",
+      "type": {
+        "type": "record",
+        "name": "AddressAvro",
+        "fields": [
+          { "name": "street", "type": "string" },
+          { "name": "city", "type": "string" },
+          { "name": "state", "type": "string" },
+          { "name": "zipCode", "type": "string" }
+        ]
+      }
+    }
+  ]
+}
