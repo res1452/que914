@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -42,11 +43,12 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     @Cacheable(value = "userProfiles", key = "#id")
+    @CircuitBreaker(name = "redis", fallbackMethod = "getUserFromDbFallback")
     public UserProfile getUserById(Long id) {
         String cacheKey = CACHE_PREFIX + id;
 
         //Try fetching from the Redis server first
-        UserProfile cachedUser = (UserProfile) redisTemplate.opsForValue().get(cacheKey);
+        UserProfile cachedUser = redisTemplate.opsForValue().get(cacheKey);
         if (cachedUser != null) {
             return cachedUser;
         }
@@ -58,6 +60,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         redisTemplate.opsForValue().set(cacheKey,user, Duration.ofMinutes(10));
 
         return user;
+    }
+
+    public UserProfile getUserFromDbFallback(Long id, Throwable ex){
+        log.warn("Redis failure on getUserById({}): {}, falling back to DB", id, ex.getMessage());
+        return userProfileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
@@ -188,6 +196,7 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     @Cacheable(value = "userProfiles", key = "#email")
+    @CircuitBreaker(name = "email", fallbackMethod = "getUserFromDbEmailFallback")
     public Optional<UserProfile> getUserByEmail(String email){
         //Try fetching from Redis first
         String cacheKey = CACHE_PREFIX + email;
@@ -203,6 +212,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         user.ifPresent(userProfile -> redisTemplate.opsForValue().set(cacheKey, userProfile, Duration.ofHours(24)));
 
         return user;
+    }
+
+    public Optional<UserProfile> getUserFromDbEmailFallback(String email, Throwable ex){
+        log.warn("Redis failure on getUserByEmail({}): {}, falling back to DB", email, ex.getMessage());
+        return Optional.ofNullable(userProfileRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found")));
     }
 
 }
