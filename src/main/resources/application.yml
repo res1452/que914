@@ -1,4 +1,16 @@
 spring:
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,metrics,prometheus
+    endpoint:
+      health:
+        show-details: always
+    metrics:
+      enable:
+        resilience4j.circuitbreaker.calls: true
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
