@@ -1,6 +1,7 @@
 package com.allstate.personal_data_service.service;
 
 import com.allstate.personal_data_service.dto.UserProfileDTO;
+import com.allstate.personal_data_service.dto.UserProfileResponse;
 import com.allstate.personal_data_service.model.UserProfile;
 
 import java.util.Map;
@@ -19,4 +20,7 @@ public interface UserProfileService {
     void deleteUserById(Long id);
 
     Optional<UserProfile> getUserByEmail(String email);
+
+    UserProfileResponse mapToResponse(UserProfile user);
+
 }

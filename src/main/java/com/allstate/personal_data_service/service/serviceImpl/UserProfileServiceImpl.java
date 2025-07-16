@@ -1,6 +1,7 @@
 package com.allstate.personal_data_service.service.serviceImpl;
 
 import com.allstate.personal_data_service.dto.UserProfileDTO;
+import com.allstate.personal_data_service.dto.UserProfileResponse;
 import com.allstate.personal_data_service.event.NotificationEmailEvent;
 import com.allstate.personal_data_service.event.UserProfileUpdatedEvent;
 import com.allstate.personal_data_service.model.UserProfile;
@@ -220,4 +221,24 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .orElseThrow(() -> new RuntimeException("User not found")));
     }
 
+    public UserProfileResponse mapToResponse(UserProfile user){
+        UserProfileResponse response = new UserProfileResponse();
+        response.setId(user.getId());
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setFullName(user.getFullName());
+        response.setEmail(user.getEmail());
+        response.setPhoneNumber(user.getPhoneNumber());
+        response.setDateOfBirth(user.getDateOfBirth());
+        response.setCreatedAt(user.getCreatedAt());
+        response.setUpdatedAt(user.getUpdatedAt());
+        response.setGender(user.getGender());
+        response.setMaritalStatus(user.getMaritalStatus());
+        response.setRole(user.getRole());
+        response.setLocale(user.getLocale());
+        response.setWantsPromotions(user.isWantsPromotions());
+        response.setAddress(user.getAddress());
+        response.setVehicle(user.getVehicle());
+        return response;
+    }
 }

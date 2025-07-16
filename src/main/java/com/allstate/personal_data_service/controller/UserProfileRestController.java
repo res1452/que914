@@ -1,6 +1,7 @@
 package com.allstate.personal_data_service.controller;
 
 import com.allstate.personal_data_service.dto.UserProfileDTO;
+import com.allstate.personal_data_service.dto.UserProfileResponse;
 import com.allstate.personal_data_service.model.UserProfile;
 import com.allstate.personal_data_service.service.UserProfileService;
 import jakarta.validation.Valid;
@@ -19,30 +20,34 @@ public class UserProfileRestController {
     private final UserProfileService userProfileService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserProfile> getUserProfile(@Valid @PathVariable Long id) {
-        return  ResponseEntity.ok(userProfileService.getUserById(id));
+    public ResponseEntity<UserProfileResponse> getUserProfile(@Valid @PathVariable Long id) {
+        UserProfile user = userProfileService.getUserById(id);
+        return  ResponseEntity.ok(userProfileService.mapToResponse(user));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<UserProfile> getUserByEmail(@Valid @PathVariable String email){
-        return userProfileService.getUserByEmail(email)
-                .map(ResponseEntity::ok)
+    public ResponseEntity<UserProfileResponse> getUserByEmail(@Valid @PathVariable String email){
+        Optional<UserProfile> userOpt = userProfileService.getUserByEmail(email);
+        return userOpt.map(user -> ResponseEntity.ok(userProfileService.mapToResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<UserProfile> createUserProfile(@Valid @RequestBody UserProfileDTO userProfile) {
-        return ResponseEntity.ok(userProfileService.createUser(userProfile));
+    public ResponseEntity<UserProfileResponse> createUserProfile(@Valid @RequestBody UserProfileDTO userProfile) {
+        UserProfile savedUser = userProfileService.createUser(userProfile);
+        return ResponseEntity.ok(userProfileService.mapToResponse(savedUser));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserProfile> updateUserProfile(@PathVariable Long id, @Valid @RequestBody UserProfileDTO userProfile) {
-        return ResponseEntity.ok(userProfileService.updateUser(id, userProfile));
+    public ResponseEntity<UserProfileResponse> updateUserProfile(@PathVariable Long id, @Valid @RequestBody UserProfileDTO userProfile) {
+        UserProfile updatedUser = userProfileService.updateUser(id, userProfile);
+        return ResponseEntity.ok(userProfileService.mapToResponse(updatedUser));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserProfile> patchUserProfile(@PathVariable Long id, @Valid @RequestBody Map<String, Object> userProfile) {
-        return ResponseEntity.ok(userProfileService.patchUser(id, userProfile));
+    public ResponseEntity<UserProfileResponse> patchUserProfile(@PathVariable Long id, @Valid @RequestBody Map<String, Object> userProfile) {
+        UserProfile patchedUser = userProfileService.patchUser(id, userProfile);
+        return ResponseEntity.ok(userProfileService.mapToResponse(patchedUser));
     }
 
     @DeleteMapping("/{id}")

@@ -4,6 +4,7 @@ import com.allstate.personal_data_service.model.Address;
 import com.allstate.personal_data_service.model.Vehicle;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,7 +19,7 @@ public class UserProfileResponse {
     private String email;
     private String phoneNumber;
 
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
